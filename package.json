@@ -1,6 +1,6 @@
 {
-  "name": "scroll-picker",
-  "version": "0.0.0-alpha.0.1",
+  "name": "@web-lite/scroll-picker",
+  "version": "0.0.0-alpha.0.2",
   "source": "src/index.ts",
   "main": "dist/main.js",
   "types": "dist/types.d.ts",

@@ -14,7 +14,7 @@ export function useScrollSnap<T>(
   },
   deps: (T | T[])[],
 ) {
-  const [snappedIndex, setSnappedIndex] = useState(initialSnappedIndex)
+  const [snappedIndex, setSnappedIndex] = useState<number>(initialSnappedIndex)
 
   const updateSnappedIndex = useCallback(
     (scrollContainer: HTMLElement) => {
@@ -27,7 +27,7 @@ export function useScrollSnap<T>(
     const element = scrollRef.current
     if (!element) return
 
-    element.scrollTo({ top: initialSnappedIndex * itemHeight })
+    element.scrollTo({ top: snappedIndex * itemHeight })
   }, deps)
 
   useEffect(() => {

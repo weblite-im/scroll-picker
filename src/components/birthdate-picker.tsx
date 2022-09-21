@@ -64,7 +64,6 @@ export function BirthdatePicker({
   const onYearValueChangeHandler = (newIndex: number) => {
     const newValue = rangeOfValidYears()[newIndex]
     const newYear = toEnglishNumber(newValue)
-    console.log(newValue)
     const daysInNewMonth = dayjs([+newYear, selectedDate.month()]).daysInMonth()
 
     const newDay =
@@ -77,9 +76,9 @@ export function BirthdatePicker({
   }
 
   const onMonthValueChangeHandler = (newIndex: number) => {
-    const newValue = rangeOfValidMonth(selectedDate)[newIndex]
+    const newValue = rangeOfValidMonth(selectedDate)[newIndex + 1]
     const months = dayjs.months()
-    const newMonth = months.indexOf(newValue) + 1
+    const newMonth = months.indexOf(newValue) - 1
     const daysInNewMonth = dayjs([selectedDate.year(), newMonth]).daysInMonth()
 
     const newDay =
@@ -93,7 +92,7 @@ export function BirthdatePicker({
 
   const onDayValueChangeHandler = (newIndex: number) => {
     const newValue = rangeOfValidDays(selectedDate)[newIndex]
-    const newDay = Number(toEnglishNumber(newValue))
+    const newDay = Number(toEnglishNumber(newValue)) + 1
     const newDate = dayjs([selectedDate.year(), selectedDate.month(), newDay])
     setSelectedDate(newDate)
   }
@@ -103,18 +102,19 @@ export function BirthdatePicker({
       <Picker
         values={[
           {
-            selectedItem: toLocale(selectedDate.year(), false),
+            selectedItem: toLocale(dayjs(defaultValue).year(), false),
             items: rangeOfValidYears(),
             onUpdate: onYearValueChangeHandler,
           },
           {
-            selectedItem:
-              rangeOfValidMonth(selectedDate)[selectedDate.month() - 1],
+            selectedItem: rangeOfValidMonth(dayjs(defaultValue))[
+              dayjs(defaultValue).month() - 1
+            ],
             items: rangeOfValidMonth(selectedDate),
             onUpdate: onMonthValueChangeHandler,
           },
           {
-            selectedItem: toLocale(selectedDate.date()),
+            selectedItem: toLocale(dayjs(defaultValue).date()),
             items: rangeOfValidDays(selectedDate),
             onUpdate: onDayValueChangeHandler,
           },

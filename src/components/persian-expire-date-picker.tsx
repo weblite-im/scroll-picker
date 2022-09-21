@@ -20,7 +20,6 @@ const rangeOfValidDays = () => {
 
 const rangeOfValidHours = (selectedDate: typeof PersianDate) => {
   const currentDate = new PersianDate(new Date())
-  // Because the greatest range of picking days is just one month, simply checking for the same day is sufficient.
   const startHour =
     selectedDate.date() === currentDate.date() ? currentDate.hour() : 0
   return R.range(startHour, 24)
