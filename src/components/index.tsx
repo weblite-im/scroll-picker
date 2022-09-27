@@ -9,7 +9,7 @@ import { useEffect } from 'react'
 export * from './picker'
 
 interface Props {
-  onChange: () => unknown
+  onChange: (selectedDate: Date) => unknown
   defaultValue: Date
   locale?: string
 }

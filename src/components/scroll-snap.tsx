@@ -35,7 +35,7 @@ export function ScrollSnap<T>({ selectedItem, items, onUpdate }: Props<T>) {
     {
       scrollRef,
       itemHeight: ITEM_HEIGHT,
-      initialSnappedIndex: items.indexOf(selectedItem)
+      initialSnappedIndex: items.indexOf(selectedItem),
     },
     [items]
   )
@@ -53,7 +53,9 @@ export function ScrollSnap<T>({ selectedItem, items, onUpdate }: Props<T>) {
           color={snappedIndex === index ? 'black' : 'lightGray'}
           key={String(text)}
           onClick={() =>
-            scrollRef.current?.scrollTo({
+            // @ts-ignore
+            // TODO: Use something except ?. to fix ts error
+            scrollRef.current.scrollTo({
               top: index * ITEM_HEIGHT,
               behavior: 'smooth',
             })

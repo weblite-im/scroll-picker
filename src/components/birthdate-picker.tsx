@@ -102,9 +102,9 @@ export function BirthdatePicker({
       <Picker
         values={[
           {
-            selectedItem: toLocale(dayjs(defaultValue).year(), false),
-            items: rangeOfValidYears(),
-            onUpdate: onYearValueChangeHandler,
+            selectedItem: toLocale(dayjs(defaultValue).date()),
+            items: rangeOfValidDays(selectedDate),
+            onUpdate: onDayValueChangeHandler,
           },
           {
             selectedItem: rangeOfValidMonth(dayjs(defaultValue))[
@@ -114,9 +114,9 @@ export function BirthdatePicker({
             onUpdate: onMonthValueChangeHandler,
           },
           {
-            selectedItem: toLocale(dayjs(defaultValue).date()),
-            items: rangeOfValidDays(selectedDate),
-            onUpdate: onDayValueChangeHandler,
+            selectedItem: toLocale(dayjs(defaultValue).year(), false),
+            items: rangeOfValidYears(),
+            onUpdate: onYearValueChangeHandler,
           },
         ]}
       />

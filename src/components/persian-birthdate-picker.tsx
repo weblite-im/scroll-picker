@@ -105,9 +105,9 @@ export function PersianBirthdatePicker({
     <Picker
       values={[
         {
-          selectedItem: toLocale(selectedDate.year(), false),
-          items: rangeOfValidYears(),
-          onUpdate: onYearValueChangeHandler,
+          selectedItem: toLocale(selectedDate.date()),
+          items: rangeOfValidDays(selectedDate),
+          onUpdate: onDayValueChangeHandler,
         },
         {
           selectedItem:
@@ -116,9 +116,9 @@ export function PersianBirthdatePicker({
           onUpdate: onMonthValueChangeHandler,
         },
         {
-          selectedItem: toLocale(selectedDate.date()),
-          items: rangeOfValidDays(selectedDate),
-          onUpdate: onDayValueChangeHandler,
+          selectedItem: toLocale(selectedDate.year(), false),
+          items: rangeOfValidYears(),
+          onUpdate: onYearValueChangeHandler,
         },
       ]}
     />

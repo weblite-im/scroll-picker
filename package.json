@@ -1,10 +1,15 @@
 {
   "name": "@web-lite/scroll-picker",
-  "version": "0.0.0-alpha.0.2",
+  "version": "0.0.0-alpha.0.9",
   "source": "src/index.ts",
   "main": "dist/main.js",
-  "types": "dist/types.d.ts",
+  "types": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
   "module": "dist/module.js",
+  "files": [
+    "dist",
+    "src"
+  ],
   "repository": "git@github.com:weblite-im/scroll-picker.git",
   "author": "mohammadhossein <m.h.dolatabadi.a@gmail.com>",
   "license": "MIT",
