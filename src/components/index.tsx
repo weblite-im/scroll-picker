@@ -1,10 +1,10 @@
+import { useEffect } from 'react'
+import i18next from 'i18next'
 import { BirthdatePicker as GlobalBirthdatePicker } from './birthdate-picker'
 import { PersianBirthdatePicker } from './persian-birthdate-picker'
 
 import { ExpireDatePicker as GlobalExpireDatePicker } from './expire-date-picker'
 import { PersianExpireDatePicker } from './persian-expire-date-picker'
-import i18next from 'i18next'
-import { useEffect } from 'react'
 
 export * from './picker'
 
@@ -16,7 +16,7 @@ interface Props {
 
 export function BirthdatePicker({ locale, ...props }: Props) {
   useEffect(() => {
-    i18next.changeLanguage(locale)
+    i18next.changeLanguage(locale).then(console.log)
   }, [locale])
   return (locale || window.navigator.language).startsWith('fa') ? (
     <PersianBirthdatePicker {...props} />

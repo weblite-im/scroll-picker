@@ -10,7 +10,6 @@ import { Picker } from './picker'
 
 dayjs.extend(localeData)
 dayjs.extend(arraySupport)
-dayjs.locale(i18next.language)
 
 const rangeOfValidYears = () => {
   const CENTURY = 100
@@ -24,7 +23,7 @@ const rangeOfValidMonth = (selectedDate: dayjs.Dayjs) => {
   const currentDate = dayjs()
   const months = dayjs.months()
   return currentDate.year() === selectedDate.year()
-    ? months.slice(0, currentDate.month())
+    ? months.slice(0, currentDate.month() + 1)
     : months
 }
 
@@ -55,6 +54,10 @@ export function BirthdatePicker({
 }: BirthdatePickerProps) {
   const [selectedDate, setSelectedDate] = useState(dayjs(defaultValue))
 
+  i18next.on('languageChanged', (lng) => {
+    dayjs.locale(lng)
+  })
+
   useEffect(() => {
     onChange(
       selectedDate.subtract(selectedDate.utcOffset(), 'minutes').toDate()
@@ -76,9 +79,9 @@ export function BirthdatePicker({
   }
 
   const onMonthValueChangeHandler = (newIndex: number) => {
-    const newValue = rangeOfValidMonth(selectedDate)[newIndex + 1]
+    const newValue = rangeOfValidMonth(selectedDate)[newIndex]
     const months = dayjs.months()
-    const newMonth = months.indexOf(newValue) - 1
+    const newMonth = months.indexOf(newValue)
     const daysInNewMonth = dayjs([selectedDate.year(), newMonth]).daysInMonth()
 
     const newDay =
@@ -108,7 +111,7 @@ export function BirthdatePicker({
           },
           {
             selectedItem: rangeOfValidMonth(dayjs(defaultValue))[
-              dayjs(defaultValue).month() - 1
+              dayjs(defaultValue).month()
             ],
             items: rangeOfValidMonth(selectedDate),
             onUpdate: onMonthValueChangeHandler,

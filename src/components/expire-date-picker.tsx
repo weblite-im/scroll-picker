@@ -56,6 +56,10 @@ export function ExpireDatePicker({
 }: InviteLinkExpireDatePickerProps) {
   const [selectedDate, setSelectedDate] = useState(dayjs(defaultValue))
 
+  i18next.on('languageChanged', (lng) => {
+    dayjs.locale(lng)
+  })
+
   useEffect(() => {
     onChange(selectedDate.toDate())
   }, [selectedDate])
