@@ -60,7 +60,7 @@ export function BirthdatePicker({
 
   useEffect(() => {
     onChange(
-      selectedDate.subtract(selectedDate.utcOffset(), 'minutes').toDate()
+      selectedDate.add(selectedDate.utcOffset(), 'minutes').toDate()
     )
   }, [selectedDate])
 
@@ -95,7 +95,7 @@ export function BirthdatePicker({
 
   const onDayValueChangeHandler = (newIndex: number) => {
     const newValue = rangeOfValidDays(selectedDate)[newIndex]
-    const newDay = Number(toEnglishNumber(newValue)) + 1
+    const newDay = Number(toEnglishNumber(newValue))
     const newDate = dayjs([selectedDate.year(), selectedDate.month(), newDay])
     setSelectedDate(newDate)
   }
