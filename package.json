@@ -1,6 +1,6 @@
 {
   "name": "@web-lite/scroll-picker",
-  "version": "0.0.0-alpha.1.0",
+  "version": "0.0.0-alpha.1.9",
   "source": "src/index.ts",
   "main": "dist/main.js",
   "types": "dist/index.d.ts",
@@ -18,10 +18,9 @@
     "react-dom": ">=17"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.4",
-    "@emotion/styled": "^11.10.4",
-    "@mui/material": "^5.10.3",
-    "@weblite-wapps/ui-toolkit": "^0.2.1",
+    "@emotion/react": "^11.4.1",
+    "@emotion/styled": "^11.3.0",
+    "@mui/material": "^5.4.0",
     "dayjs": "^1.11.5",
     "i18next": "^21.9.1",
     "jalaliday": "^2.3.0",

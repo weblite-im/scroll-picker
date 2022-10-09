@@ -5,6 +5,7 @@ const ITEM_HEIGHT = 48
 const CONTAINER_HEIGHT = ITEM_HEIGHT * 3
 
 const StyledDivider = styled(Divider)(({ theme }) => ({
+  // @ts-ignore
   borderColor: theme.palette.semiLightGray,
   borderWidth: '1px',
 }))

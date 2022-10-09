@@ -4,7 +4,6 @@ import dayjs from 'dayjs'
 import localeData from 'dayjs/plugin/localeData'
 import arraySupport from 'dayjs/plugin/arraySupport'
 import i18next from 'i18next'
-import { ThemeProvider } from '@weblite-wapps/ui-toolkit'
 import { toEnglishNumber, toLocale } from '../helpers/fuctions/text'
 import { Picker } from './picker'
 
@@ -45,23 +44,21 @@ const rangeOfValidDays = (selectedDate: dayjs.Dayjs) => {
 
 interface BirthdatePickerProps {
   onChange: (selectedDate: Date) => unknown
-  defaultValue: Date
+  selected: Date
 }
 
 export function BirthdatePicker({
   onChange,
-  defaultValue,
+  selected,
 }: BirthdatePickerProps) {
-  const [selectedDate, setSelectedDate] = useState(dayjs(defaultValue))
+  const [selectedDate, setSelectedDate] = useState(dayjs(selected))
 
   i18next.on('languageChanged', (lng) => {
     dayjs.locale(lng)
   })
 
   useEffect(() => {
-    onChange(
-      selectedDate.add(selectedDate.utcOffset(), 'minutes').toDate()
-    )
+    onChange(selectedDate.add(selectedDate.utcOffset(), 'minutes').toDate())
   }, [selectedDate])
 
   const onYearValueChangeHandler = (newIndex: number) => {
@@ -101,28 +98,26 @@ export function BirthdatePicker({
   }
 
   return (
-    <ThemeProvider>
-      <Picker
-        values={[
-          {
-            selectedItem: toLocale(dayjs(defaultValue).date()),
-            items: rangeOfValidDays(selectedDate),
-            onUpdate: onDayValueChangeHandler,
-          },
-          {
-            selectedItem: rangeOfValidMonth(dayjs(defaultValue))[
-              dayjs(defaultValue).month()
-            ],
-            items: rangeOfValidMonth(selectedDate),
-            onUpdate: onMonthValueChangeHandler,
-          },
-          {
-            selectedItem: toLocale(dayjs(defaultValue).year(), false),
-            items: rangeOfValidYears(),
-            onUpdate: onYearValueChangeHandler,
-          },
-        ]}
-      />
-    </ThemeProvider>
+    <Picker
+      values={[
+        {
+          selectedItem: toLocale(dayjs(selected).date()),
+          items: rangeOfValidDays(selectedDate),
+          onUpdate: onDayValueChangeHandler,
+        },
+        {
+          selectedItem: rangeOfValidMonth(dayjs(selected))[
+            dayjs(selected).month()
+          ],
+          items: rangeOfValidMonth(selectedDate),
+          onUpdate: onMonthValueChangeHandler,
+        },
+        {
+          selectedItem: toLocale(dayjs(selected).year(), false),
+          items: rangeOfValidYears(),
+          onUpdate: onYearValueChangeHandler,
+        },
+      ]}
+    />
   )
 }

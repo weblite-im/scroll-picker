@@ -40,16 +40,14 @@ const rangeOfValidDays = (selectedDate: typeof PersianDate) => {
 
 interface PersianBirthdatePickerProps {
   onChange: (selectedDate: Date) => unknown
-  defaultValue: Date
+  selected: Date
 }
 
 export function PersianBirthdatePicker({
   onChange,
-  defaultValue,
+  selected,
 }: PersianBirthdatePickerProps) {
-  const [selectedDate, setSelectedDate] = useState(
-    new PersianDate(defaultValue)
-  )
+  const [selectedDate, setSelectedDate] = useState(new PersianDate(selected))
 
   useEffect(() => {
     onChange(new Date(selectedDate.subtract('minutes', selectedDate.zone())))
