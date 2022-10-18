@@ -1,25 +1,31 @@
 {
-  "name": "scroll-picker",
-  "version": "0.0.0-alpha.0.1",
+  "name": "@web-lite/scroll-picker",
+  "version": "0.0.0-alpha.2.0",
   "source": "src/index.ts",
   "main": "dist/main.js",
-  "types": "dist/types.d.ts",
+  "types": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
   "module": "dist/module.js",
+  "files": [
+    "dist",
+    "src"
+  ],
   "repository": "git@github.com:weblite-im/scroll-picker.git",
   "author": "mohammadhossein <m.h.dolatabadi.a@gmail.com>",
   "license": "MIT",
+  "peerDependencies": {
+    "react": ">=17",
+    "react-dom": ">=17"
+  },
   "dependencies": {
-    "@emotion/react": "^11.10.4",
-    "@emotion/styled": "^11.10.4",
-    "@mui/material": "^5.10.3",
-    "@weblite-wapps/ui-toolkit": "^0.2.1",
+    "@emotion/react": "^11.4.1",
+    "@emotion/styled": "^11.3.0",
+    "@mui/material": "^5.4.0",
     "dayjs": "^1.11.5",
     "i18next": "^21.9.1",
     "jalaliday": "^2.3.0",
     "persian-date": "^1.1.0",
     "ramda": "^0.28.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "scroll-snap": "^4.0.3"
   },
   "devDependencies": {

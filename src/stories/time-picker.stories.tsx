@@ -1,37 +1,42 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react'
-import themeDecorator from './lib/theme-decorator'
 import { boxDecorator } from './lib/box-decorator'
-import { BirthdatePicker } from '..'
+import { TimePicker } from '..'
 
-type TComponent = typeof BirthdatePicker
+type TComponent = typeof TimePicker
 
 export default {
-  title: 'Modals / Birthdate Picker',
-  component: BirthdatePicker,
-  decorators: [themeDecorator, boxDecorator()],
+  title: 'Modals / Time Picker',
+  component: TimePicker,
+  decorators: [boxDecorator()],
 } as ComponentMeta<TComponent>
 
 const Template: ComponentStory<TComponent> = (args) => (
-  <BirthdatePicker {...args} />
+  <TimePicker {...args} />
 )
 
 export const Persian = Template.bind({})
 Persian.args = {
   locale: 'fa',
   onChange: console.log,
-  defaultValue: new Date(),
+  start: new Date(2022, 9, 1),
+  selected: new Date(),
+  end: new Date(2022, 11, 1)
 }
 
 export const Arabic = Template.bind({})
 Arabic.args = {
   locale: 'ar',
   onChange: console.log,
-  defaultValue: new Date(),
+  start: new Date(2022, 9, 1),
+  selected: new Date(),
+  end: new Date(2022, 11, 1)
 }
 
 export const English = Template.bind({})
 English.args = {
   locale: 'en',
   onChange: console.log,
-  defaultValue: new Date(),
+  start: new Date(2022, 9, 1),
+  selected: new Date(),
+  end: new Date(2022, 11, 1)
 }
