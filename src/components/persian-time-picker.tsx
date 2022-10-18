@@ -6,7 +6,7 @@ import { toEnglishNumber, toLocale } from '../helpers/fuctions/text'
 import { Picker } from './picker'
 import { t } from '../setup/i18n'
 
-export const rangeOfValidDays = (
+export const getDaysRange = (
   startDate: Date,
   endDate: Date,
   selected: typeof PersianDate
@@ -33,14 +33,15 @@ export const rangeOfValidDays = (
 
   return R.range(from, to).map((day: any) => ({
     text:
-      containsNow && now.date() === new PersianDate(startDate).add('days', day).date()
+      containsNow &&
+      now.date() === new PersianDate(startDate).add('days', day).date()
         ? 'امروز'
         : new PersianDate(start).add('days', day).format('D MMMM'),
     date: new PersianDate(start).add('days', day),
   }))
 }
 
-export const rangeOfValidHours = (startDate: Date, endDate: Date) => {
+export const getHoursRange = (startDate: Date, endDate: Date) => {
   const start = new PersianDate(startDate)
   const end = new PersianDate(endDate)
   const isLessThanOneDay =
@@ -49,12 +50,12 @@ export const rangeOfValidHours = (startDate: Date, endDate: Date) => {
     start.date() === end.date()
   const startHour = isLessThanOneDay ? start.hour() : 0
   const endHour = isLessThanOneDay ? end.hour() : 24
-  return R.range(startHour, endHour)
-    .map((number: any) => String(number).padStart(2, '0'))
-    .map((number: any) => toLocale(number))
+  return R.range(startHour, endHour).map((number: any) =>
+    toLocale(String(number).padStart(2, '0'))
+  )
 }
 
-export const rangeOfValidMinutes = (startDate: Date, endDate: Date) => {
+export const getMinutesRange = (startDate: Date, endDate: Date) => {
   const start = new PersianDate(startDate)
   const end = new PersianDate(endDate)
   const isLessThanOneHour =
@@ -82,25 +83,25 @@ export function PersianTimePicker({
   end,
   onChange,
 }: PersianTimePickerProps) {
-  if (+start > +selected) return <div>invalid</div>
-  if (+start > +end) return <div>invalid</div>
-  if (+selected > +end) return <div>invalid</div>
+  if (+start > +selected) return <div>invalid input</div>
+  if (+start > +end) return <div>invalid input</div>
+  if (+selected > +end) return <div>invalid input</div>
   const [selectedDate, setSelectedDate] = useState(new PersianDate(selected))
 
   useEffect(() => {
     onChange(selectedDate.toDate())
   }, [selectedDate])
 
-  const onDayValueChangeHandler = (newIndex: number) => {
-    const { date } = rangeOfValidDays(start, end, selectedDate)[newIndex]
+  const onDayChange = (newIndex: number) => {
+    const { date } = getDaysRange(start, end, selectedDate)[newIndex]
     const newDate = new PersianDate(
       selectedDate.date(date.date()).month(date.month())
     )
     setSelectedDate(newDate)
   }
 
-  const onHourValueChangeHandler = (newIndex: number) => {
-    const newValue = rangeOfValidHours(start, end)[newIndex]
+  const onHourChange = (newIndex: number) => {
+    const newValue = getHoursRange(start, end)[newIndex]
     const newHour = toEnglishNumber(
       newValue.slice(newValue.indexOf('۰') === -1 ? 0 : newValue.indexOf('۰'))
     )
@@ -109,8 +110,8 @@ export function PersianTimePicker({
     setSelectedDate(newDate)
   }
 
-  const onMinuteValueChangeHandler = (newIndex: number) => {
-    const newValue = rangeOfValidMinutes(start, end)[newIndex]
+  const onMinuteChange = (newIndex: number) => {
+    const newValue = getMinutesRange(start, end)[newIndex]
     const newMinute = toEnglishNumber(
       newValue.slice(newValue.indexOf('۰') === -1 ? 0 : newValue.indexOf('۰'))
     )
@@ -125,23 +126,21 @@ export function PersianTimePicker({
           selectedItem: toLocale(
             String(selectedDate.minute()).padStart(2, '0')
           ),
-          items: rangeOfValidMinutes(start, end),
-          onUpdate: onMinuteValueChangeHandler,
+          items: getMinutesRange(start, end),
+          onUpdate: onMinuteChange,
         },
         {
           selectedItem: toLocale(String(selectedDate.hour()).padStart(2, '0')),
-          items: rangeOfValidHours(start, end),
-          onUpdate: onHourValueChangeHandler,
+          items: getHoursRange(start, end),
+          onUpdate: onHourChange,
         },
         {
           selectedItem:
             selectedDate.date() === new PersianDate(new Date()).date()
               ? t('today')
               : selectedDate.format('D MMMM'),
-          items: rangeOfValidDays(start, end, selectedDate).map(
-            ({ text }) => text
-          ),
-          onUpdate: onDayValueChangeHandler,
+          items: getDaysRange(start, end, selectedDate).map(({ text }) => text),
+          onUpdate: onDayChange,
         },
       ]}
     />

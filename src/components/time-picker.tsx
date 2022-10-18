@@ -12,7 +12,7 @@ dayjs.extend(localeData)
 dayjs.extend(arraySupport)
 dayjs.locale(i18next.language)
 
-export const rangeOfValidDays = (
+export const getDaysRange = (
   startDate: Date,
   endDate: Date,
   selectedDate: Date
@@ -47,7 +47,7 @@ export const rangeOfValidDays = (
   }))
 }
 
-export const rangeOfValidHours = (startDate: Date, endDate: Date) => {
+export const getHoursRange = (startDate: Date, endDate: Date) => {
   const start = dayjs(startDate)
   const end = dayjs(endDate)
   const isLessThanOneDay =
@@ -61,7 +61,7 @@ export const rangeOfValidHours = (startDate: Date, endDate: Date) => {
     .map((number: any) => toLocale(number))
 }
 
-export const rangeOfValidMinutes = (startDate: Date, endDate: Date) => {
+export const getMinutesRange = (startDate: Date, endDate: Date) => {
   const start = dayjs(startDate)
   const end = dayjs(endDate)
   const isLessThanOneHour =
@@ -87,8 +87,11 @@ export function TimePicker({
   onChange,
   selected,
   start,
-  end
+  end,
 }: InviteLinkExpireDatePickerProps) {
+  if (+start > +selected) return <div>invalid input</div>
+  if (+start > +end) return <div>invalid input</div>
+  if (+selected > +end) return <div>invalid input</div>
   const [selectedDate, setSelectedDate] = useState(dayjs(selected))
 
   i18next.on('languageChanged', (lng) => {
@@ -99,14 +102,14 @@ export function TimePicker({
     onChange(selectedDate.toDate())
   }, [selectedDate])
 
-  const onDayValueChangeHandler = (newIndex: number) => {
-    const { date } = rangeOfValidDays(start, end, selected)[newIndex]
+  const onDayChange = (newIndex: number) => {
+    const { date } = getDaysRange(start, end, selected)[newIndex]
     const newDate = dayjs(selectedDate.date(date.date()).month(date.month()))
     setSelectedDate(newDate)
   }
 
-  const onHourValueChangeHandler = (newIndex: number) => {
-    const newValue = rangeOfValidHours(start, end)[newIndex]
+  const onHourChange = (newIndex: number) => {
+    const newValue = getHoursRange(start, end)[newIndex]
     const newHour = toEnglishNumber(
       newValue.slice(
         newValue.indexOf(toLocale(0)) === -1 ? 0 : newValue.indexOf(toLocale(0))
@@ -117,8 +120,8 @@ export function TimePicker({
     setSelectedDate(newDate)
   }
 
-  const onMinuteValueChangeHandler = (newIndex: number) => {
-    const newValue = rangeOfValidMinutes(start, end)[newIndex]
+  const onMinuteChange = (newIndex: number) => {
+    const newValue = getMinutesRange(start, end)[newIndex]
     if (!newValue) return
     const newMinute = toEnglishNumber(
       newValue.slice(
@@ -136,21 +139,21 @@ export function TimePicker({
           selectedItem: toLocale(
             String(selectedDate.minute()).padStart(2, '0')
           ),
-          items: rangeOfValidMinutes(start, end),
-          onUpdate: onMinuteValueChangeHandler,
+          items: getMinutesRange(start, end),
+          onUpdate: onMinuteChange,
         },
         {
           selectedItem: toLocale(String(selectedDate.hour()).padStart(2, '0')),
-          items: rangeOfValidHours(start, end),
-          onUpdate: onHourValueChangeHandler,
+          items: getHoursRange(start, end),
+          onUpdate: onHourChange,
         },
         {
           selectedItem:
             selectedDate.date() === dayjs(new Date()).date()
               ? t('today')
               : selectedDate.format('D MMMM'),
-          items: rangeOfValidDays(start, end, selected).map(({ text }) => text),
-          onUpdate: onDayValueChangeHandler,
+          items: getDaysRange(start, end, selected).map(({ text }) => text),
+          onUpdate: onDayChange,
         },
       ]}
     />

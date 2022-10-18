@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import i18next from 'i18next'
-import { BirthdatePicker as GlobalBirthdatePicker } from './birthdate-picker'
-import { PersianBirthdatePicker } from './persian-birthdate-picker'
+import { DatePicker as GlobalDatePicker } from './date-picker'
+import { PersianDatePicker } from './persian-date-picker'
 
 import { TimePicker as GlobalTimePicker } from './time-picker'
 import { PersianTimePicker } from './persian-time-picker'
@@ -18,7 +18,7 @@ interface Props {
   locale?: string
 }
 
-export function BirthdatePicker({ theme, locale, ...props }: Props) {
+export function DatePicker({ theme, locale, ...props }: Props) {
   useEffect(() => {
     i18next.changeLanguage(locale).then(console.log)
   }, [locale])
@@ -26,9 +26,9 @@ export function BirthdatePicker({ theme, locale, ...props }: Props) {
     // @ts-ignore
     <ThemeProvider theme={theme}>
       {(locale || window.navigator.language).startsWith('fa') ? (
-        <PersianBirthdatePicker {...props} />
+        <PersianDatePicker {...props} />
       ) : (
-        <GlobalBirthdatePicker {...props} />
+        <GlobalDatePicker {...props} />
       )}
     </ThemeProvider>
   )

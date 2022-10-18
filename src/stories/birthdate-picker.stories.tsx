@@ -5,7 +5,7 @@ import { BirthdatePicker } from '..'
 type TComponent = typeof BirthdatePicker
 
 export default {
-  title: 'Modals / Birthdate Picker',
+  title: 'Modals / Date Picker',
   component: BirthdatePicker,
   decorators: [boxDecorator()],
 } as ComponentMeta<TComponent>
@@ -20,21 +20,23 @@ Persian.args = {
   onChange: console.log,
   start: new Date(2022, 9, 1),
   selected: new Date(),
-  end: new Date(2022, 11, 1)
+  end: new Date(2022, 11, 1),
 }
 
 export const Arabic = Template.bind({})
 Arabic.args = {
   locale: 'ar',
   onChange: console.log,
-
+  start: new Date(2022, 9, 1),
   selected: new Date(),
+  end: new Date(2022, 11, 1),
 }
 
 export const English = Template.bind({})
 English.args = {
   locale: 'en',
   onChange: console.log,
-
+  start: new Date(2022, 9, 1),
   selected: new Date(),
+  end: new Date(2022, 11, 1),
 }
