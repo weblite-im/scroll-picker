@@ -1,18 +1,16 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react'
 import { boxDecorator } from './lib/box-decorator'
-import { BirthdatePicker } from '..'
+import { DatePicker } from '..'
 
-type TComponent = typeof BirthdatePicker
+type TComponent = typeof DatePicker
 
 export default {
   title: 'Modals / Date Picker',
-  component: BirthdatePicker,
+  component: DatePicker,
   decorators: [boxDecorator()],
 } as ComponentMeta<TComponent>
 
-const Template: ComponentStory<TComponent> = (args) => (
-  <BirthdatePicker {...args} />
-)
+const Template: ComponentStory<TComponent> = (args) => <DatePicker {...args} />
 
 export const Persian = Template.bind({})
 Persian.args = {

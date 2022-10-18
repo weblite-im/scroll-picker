@@ -5,7 +5,7 @@ import { TimePicker } from '..'
 type TComponent = typeof TimePicker
 
 export default {
-  title: 'Modals / Expire Date Picker',
+  title: 'Modals / Time Picker',
   component: TimePicker,
   decorators: [boxDecorator()],
 } as ComponentMeta<TComponent>
