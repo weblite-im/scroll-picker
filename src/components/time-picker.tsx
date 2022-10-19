@@ -3,14 +3,11 @@ import { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import localeData from 'dayjs/plugin/localeData'
 import arraySupport from 'dayjs/plugin/arraySupport'
-import i18next from 'i18next'
 import { toEnglishNumber, toLocale } from '../helpers/fuctions/text'
 import { Picker } from './picker'
-import { t } from '../setup/i18n'
 
 dayjs.extend(localeData)
 dayjs.extend(arraySupport)
-dayjs.locale(i18next.language)
 
 export const getDaysRange = (
   startDate: Date,
@@ -20,7 +17,6 @@ export const getDaysRange = (
   const start = dayjs(startDate)
   const end = dayjs(endDate)
   const selected = dayjs(selectedDate)
-  const now = dayjs(new Date())
   const isLessThanOneMonth =
     start.year() === end.year() && start.month() === end.month()
 
@@ -28,8 +24,6 @@ export const getDaysRange = (
     selected.year(),
     selected.month(),
   ]).daysInMonth()
-
-  const containsNow = start.diff(now) <= 0 && end.diff(now) >= 0
 
   const from = isLessThanOneMonth ? start.date() : 1
   const to =
@@ -39,10 +33,7 @@ export const getDaysRange = (
       : end.date() + 1
 
   return R.range(from, to).map((day: any) => ({
-    text:
-      containsNow && now.date() === dayjs(startDate).add(day, 'days').date()
-        ? 'امروز'
-        : dayjs(start).add(day, 'days').format('D MMMM'),
+    text: dayjs(start).add(day, 'days').format('D MMMM'),
     date: dayjs(start).add(day, 'days'),
   }))
 }
@@ -94,21 +85,19 @@ export function TimePicker({
   if (+selected > +end) return <div>invalid input</div>
   const [selectedDate, setSelectedDate] = useState(dayjs(selected))
 
-  i18next.on('languageChanged', (lng) => {
-    dayjs.locale(lng)
-  })
-
   useEffect(() => {
     onChange(selectedDate.toDate())
   }, [selectedDate])
 
   const onDayChange = (newIndex: number) => {
+    if (newIndex === -1) return
     const { date } = getDaysRange(start, end, selected)[newIndex]
     const newDate = dayjs(selectedDate.date(date.date()).month(date.month()))
     setSelectedDate(newDate)
   }
 
   const onHourChange = (newIndex: number) => {
+    if (newIndex === -1) return
     const newValue = getHoursRange(start, end)[newIndex]
     const newHour = toEnglishNumber(
       newValue.slice(
@@ -121,6 +110,7 @@ export function TimePicker({
   }
 
   const onMinuteChange = (newIndex: number) => {
+    if (newIndex === -1) return
     const newValue = getMinutesRange(start, end)[newIndex]
     if (!newValue) return
     const newMinute = toEnglishNumber(
@@ -132,26 +122,33 @@ export function TimePicker({
     setSelectedDate(newDate)
   }
 
+  const parseSelected = () => {
+    const minuteValue = toLocale(String(selectedDate.minute()).padStart(2, '0'))
+    const minuteIndex = getMinutesRange(start, end).indexOf(minuteValue)
+    const hourValue = toLocale(String(selectedDate.hour()).padStart(2, '0'))
+    const hourIndex = getHoursRange(start, end).indexOf(hourValue)
+    const dayValue = selectedDate.format('D MMMM')
+    const dayIndex = getDaysRange(start, end, selected)
+      .map(({ text }) => text)
+      .indexOf(dayValue)
+    return { minuteIndex, hourIndex, dayIndex }
+  }
+
   return (
     <Picker
       values={[
         {
-          selectedItem: toLocale(
-            String(selectedDate.minute()).padStart(2, '0')
-          ),
+          selectedIndex: parseSelected().minuteIndex,
           items: getMinutesRange(start, end),
           onUpdate: onMinuteChange,
         },
         {
-          selectedItem: toLocale(String(selectedDate.hour()).padStart(2, '0')),
+          selectedIndex: parseSelected().hourIndex,
           items: getHoursRange(start, end),
           onUpdate: onHourChange,
         },
         {
-          selectedItem:
-            selectedDate.date() === dayjs(new Date()).date()
-              ? t('today')
-              : selectedDate.format('D MMMM'),
+          selectedIndex: parseSelected().dayIndex,
           items: getDaysRange(start, end, selected).map(({ text }) => text),
           onUpdate: onDayChange,
         },

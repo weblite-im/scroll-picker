@@ -1,14 +1,16 @@
 import * as R from 'ramda'
-import { useEffect, useState } from 'react'
+import { useEffect, useState} from 'react'
 import dayjs from 'dayjs'
 import localeData from 'dayjs/plugin/localeData'
 import arraySupport from 'dayjs/plugin/arraySupport'
-import i18next from 'i18next'
+import 'dayjs/locale/ar'
 import { toEnglishNumber, toLocale } from '../helpers/fuctions/text'
 import { Picker } from './picker'
+import i18next from 'i18next'
 
 dayjs.extend(localeData)
 dayjs.extend(arraySupport)
+dayjs.locale(i18next.language)
 
 const getYearsRange = (startDate: Date, endDate: Date) => {
   const start = dayjs(startDate)
@@ -88,15 +90,12 @@ export function DatePicker({
   if (+selected > +end) return <div>invalid input</div>
   const [selectedDate, setSelectedDate] = useState(dayjs(selected))
 
-  i18next.on('languageChanged', (lng) => {
-    dayjs.locale(lng)
-  })
-
   useEffect(() => {
     onChange(selectedDate.add(selectedDate.utcOffset(), 'minutes').toDate())
   }, [selectedDate])
 
   const onYearChange = (newIndex: number) => {
+    if (newIndex === -1) return
     const newValue = getYearsRange(start, end)[newIndex]
     const newYear = toEnglishNumber(newValue)
     const daysInNewMonth = dayjs([+newYear, selectedDate.month()]).daysInMonth()
@@ -111,6 +110,7 @@ export function DatePicker({
   }
 
   const onMonthChange = (newIndex: number) => {
+    if (newIndex === -1) return
     const newValue = getMonthsRange(start, end, selectedDate)[newIndex]
     const months = dayjs.months()
     const newMonth = months.indexOf(newValue)
@@ -126,6 +126,7 @@ export function DatePicker({
   }
 
   const onDayChange = (newIndex: number) => {
+    if (newIndex === -1) return
     const { date } = getDaysRange(start, end, selectedDate)[newIndex]
     const newDate = dayjs([
       selectedDate.year(),
@@ -135,21 +136,34 @@ export function DatePicker({
     setSelectedDate(newDate)
   }
 
+  const parseSelected = () => {
+    const yearValue = toLocale(selectedDate.year(), false)
+    const yearIndex = getYearsRange(start, end).indexOf(yearValue)
+    const monthValue = selectedDate.format('MMM')
+    const monthIndex = getMonthsRange(start, end, selectedDate).indexOf(
+      monthValue
+    )
+    const dayValue = toLocale(selectedDate.date())
+    const dayIndex = getDaysRange(start, end, selectedDate)
+      .map(({ text }) => text)
+      .indexOf(dayValue)
+    return { yearIndex, monthIndex, dayIndex }
+  }
   return (
     <Picker
       values={[
         {
-          selectedItem: selectedDate.format('D'),
+          selectedIndex: parseSelected().dayIndex,
           items: getDaysRange(start, end, selectedDate).map(({ text }) => text),
           onUpdate: onDayChange,
         },
         {
-          selectedItem: selectedDate.format('MMM'),
+          selectedIndex: parseSelected().monthIndex,
           items: getMonthsRange(start, end, selectedDate),
           onUpdate: onMonthChange,
         },
         {
-          selectedItem: toLocale(dayjs(selected).year(), false),
+          selectedIndex: parseSelected().yearIndex,
           items: getYearsRange(start, end),
           onUpdate: onYearChange,
         },

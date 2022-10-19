@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import PersianDate from 'persian-date'
 import { toEnglishNumber, toLocale } from '../helpers/fuctions/text'
 import { Picker } from './picker'
-import { t } from '../setup/i18n'
 
 export const getDaysRange = (
   startDate: Date,
@@ -13,7 +12,6 @@ export const getDaysRange = (
 ) => {
   const start = new PersianDate(startDate)
   const end = new PersianDate(endDate)
-  const now = new PersianDate(new Date())
   const isLessThanOneMonth =
     start.year() === end.year() && start.month() === end.month()
 
@@ -21,8 +19,6 @@ export const getDaysRange = (
     selected.year(),
     selected.month(),
   ]).daysInMonth()
-
-  const containsNow = start.diff(now) <= 0 && end.diff(now) >= 0
 
   const from = isLessThanOneMonth ? start.date() : 1
   const to =
@@ -32,11 +28,7 @@ export const getDaysRange = (
       : end.date() + 1
 
   return R.range(from, to).map((day: any) => ({
-    text:
-      containsNow &&
-      now.date() === new PersianDate(startDate).add('days', day).date()
-        ? 'امروز'
-        : new PersianDate(start).add('days', day).format('D MMMM'),
+    text: new PersianDate(start).add('days', day).format('D MMMM'),
     date: new PersianDate(start).add('days', day),
   }))
 }
@@ -93,6 +85,7 @@ export function PersianTimePicker({
   }, [selectedDate])
 
   const onDayChange = (newIndex: number) => {
+    if (newIndex === -1) return
     const { date } = getDaysRange(start, end, selectedDate)[newIndex]
     const newDate = new PersianDate(
       selectedDate.date(date.date()).month(date.month())
@@ -101,6 +94,7 @@ export function PersianTimePicker({
   }
 
   const onHourChange = (newIndex: number) => {
+    if (newIndex === -1) return
     const newValue = getHoursRange(start, end)[newIndex]
     const newHour = toEnglishNumber(
       newValue.slice(newValue.indexOf('۰') === -1 ? 0 : newValue.indexOf('۰'))
@@ -111,6 +105,7 @@ export function PersianTimePicker({
   }
 
   const onMinuteChange = (newIndex: number) => {
+    if (newIndex === -1) return
     const newValue = getMinutesRange(start, end)[newIndex]
     const newMinute = toEnglishNumber(
       newValue.slice(newValue.indexOf('۰') === -1 ? 0 : newValue.indexOf('۰'))
@@ -119,26 +114,33 @@ export function PersianTimePicker({
     setSelectedDate(newDate)
   }
 
+  const parseSelected = () => {
+    const minuteValue = toLocale(String(selectedDate.minute()).padStart(2, '0'))
+    const minuteIndex = getMinutesRange(start, end).indexOf(minuteValue)
+    const hourValue = toLocale(String(selectedDate.hour()).padStart(2, '0'))
+    const hourIndex = getHoursRange(start, end).indexOf(hourValue)
+    const dayValue = selectedDate.format('D MMMM')
+    const dayIndex = getDaysRange(start, end, selectedDate)
+      .map(({ text }) => text)
+      .indexOf(dayValue)
+    return { minuteIndex, hourIndex, dayIndex }
+  }
+
   return (
     <Picker
       values={[
         {
-          selectedItem: toLocale(
-            String(selectedDate.minute()).padStart(2, '0')
-          ),
+          selectedIndex: parseSelected().minuteIndex,
           items: getMinutesRange(start, end),
           onUpdate: onMinuteChange,
         },
         {
-          selectedItem: toLocale(String(selectedDate.hour()).padStart(2, '0')),
+          selectedIndex: parseSelected().hourIndex,
           items: getHoursRange(start, end),
           onUpdate: onHourChange,
         },
         {
-          selectedItem:
-            selectedDate.date() === new PersianDate(new Date()).date()
-              ? t('today')
-              : selectedDate.format('D MMMM'),
+          selectedIndex: parseSelected().dayIndex,
           items: getDaysRange(start, end, selectedDate).map(({ text }) => text),
           onUpdate: onDayChange,
         },

@@ -1,20 +1,19 @@
 import { useEffect } from 'react'
 import i18next from 'i18next'
 import { DatePicker as GlobalDatePicker } from './date-picker'
+import { ThemeProvider } from '@mui/material'
 import { PersianDatePicker } from './persian-date-picker'
-
 import { TimePicker as GlobalTimePicker } from './time-picker'
 import { PersianTimePicker } from './persian-time-picker'
-import { ThemeProvider } from '@mui/material'
-
+import '../setup/i18n/index'
 export * from './picker'
 
 interface Props {
-  onChange: (selectedDate: Date) => unknown
   selected: Date
   start: Date
   end: Date
-  theme: unknown
+  onChange: (selectedDate: Date) => unknown
+  theme?: unknown
   locale?: string
 }
 

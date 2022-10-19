@@ -90,7 +90,9 @@ export function PersianDatePicker({
   }, [selectedDate.toDate()])
 
   const onYearChange = (newIndex: number) => {
+    if (newIndex === -1) return
     const newValue = getYearsRange(start, end)[newIndex]
+    console.log(newValue)
     const newYear = Number(toEnglishNumber(newValue))
     const daysInNewMonth = new PersianDate([
       newYear,
@@ -107,6 +109,7 @@ export function PersianDatePicker({
   }
 
   const onMonthChange = (newIndex: number) => {
+    if (newIndex === -1) return
     const newValue = getMonthsRange(start, end, selectedDate)[newIndex]
     const { months } = new PersianDate().rangeName()
     const newMonth = months.indexOf(newValue) + 1
@@ -125,6 +128,7 @@ export function PersianDatePicker({
   }
 
   const onDayChange = (newIndex: number) => {
+    if (newIndex === -1) return
     const { date } = getDaysRange(start, end, selectedDate)[newIndex]
     const newDate = new PersianDate([
       selectedDate.year(),
@@ -133,22 +137,35 @@ export function PersianDatePicker({
     ])
     setSelectedDate(newDate)
   }
+  const parseSelected = () => {
+    const yearValue = toLocale(selectedDate.year(), false)
+    const yearIndex = getYearsRange(start, end).indexOf(yearValue)
+    const monthValue = selectedDate.format('MMMM')
+    const monthIndex = getMonthsRange(start, end, selectedDate).indexOf(
+      monthValue
+    )
+    const dayValue = toLocale(selectedDate.date())
+    const dayIndex = getDaysRange(start, end, selectedDate)
+      .map(({ text }) => text)
+      .indexOf(dayValue)
+    return { yearIndex, monthIndex, dayIndex }
+  }
 
   return (
     <Picker
       values={[
         {
-          selectedItem: selectedDate.format('D'),
+          selectedIndex: parseSelected().dayIndex,
           items: dayRange.map(({ text }) => text),
           onUpdate: onDayChange,
         },
         {
-          selectedItem: selectedDate.format('MMM'),
+          selectedIndex: parseSelected().monthIndex,
           items: getMonthsRange(start, end, selectedDate),
           onUpdate: onMonthChange,
         },
         {
-          selectedItem: toLocale(selectedDate.year(), false),
+          selectedIndex: parseSelected().yearIndex,
           items: getYearsRange(start, end),
           onUpdate: onYearChange,
         },
