@@ -23,7 +23,7 @@ Persian.args = {
 
 export const Arabic = Template.bind({})
 Arabic.args = {
-  locale: 'ar',
+  locale: 'ar-IQ',
   onChange: () => {},
   start: new Date(2022, 9, 1),
   selected: new Date(),

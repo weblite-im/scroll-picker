@@ -33,7 +33,7 @@ export const getDaysRange = (
       : end.date() + 1
 
   return R.range(from, to).map((day: any) => ({
-    text: dayjs(start).add(day, 'days').format('D MMMM'),
+    text: toLocale(dayjs(start).add(day, 'days').format('D MMMM')),
     date: dayjs(start).add(day, 'days'),
   }))
 }
@@ -127,7 +127,7 @@ export function TimePicker({
     const minuteIndex = getMinutesRange(start, end).indexOf(minuteValue)
     const hourValue = toLocale(String(selectedDate.hour()).padStart(2, '0'))
     const hourIndex = getHoursRange(start, end).indexOf(hourValue)
-    const dayValue = selectedDate.format('D MMMM')
+    const dayValue = toLocale(selectedDate.format('D MMMM'))
     const dayIndex = getDaysRange(start, end, selected)
       .map(({ text }) => text)
       .indexOf(dayValue)
