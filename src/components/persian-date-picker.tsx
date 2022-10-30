@@ -23,17 +23,9 @@ const getMonthsRange = (
   const end = new PersianDate(endDate)
   const { months } = new PersianDate().rangeName()
 
-  if (start.year() === end.year())
-    return months.slice(start.month() - 1, end.month() - 1)
-
-  if (end.year() - start.year() === 1)
-    return months.slice(start.month()).concat(months.slice(0, end.month()))
-
-  if (selected.year() === start.year()) return months.slice(start.month() - 1)
-
-  if (selected.year() === end.year()) return months.slice(0, end.month())
-
-  return months
+  const startMonth = selected.year() === start.year() ? start.month() - 1 : 0
+  const endMonth = selected.year() === end.year() ? end.month() : undefined
+  return months.slice(startMonth, endMonth)
 }
 
 const getDaysRange = (
@@ -53,8 +45,9 @@ const getDaysRange = (
     selected.month() === start.month() && selected.year() === start.year()
       ? start.date() - 1
       : 0
+
   const to =
-    selected.month() === end.month() - 1 && selected.year() === end.year()
+    selected.month() === end.month() && selected.year() === end.year()
       ? end.date()
       : numberOfDaysInMonth + 1
 
