@@ -25,11 +25,12 @@ export function useScrollSnap<T>(
   )
 
   useEffect(() => {
+    setSnappedIndex(initialSnappedIndex)
     const element = scrollRef.current
     if (!element) return
 
-    element.scrollTo({ top: snappedIndex * itemHeight })
-  }, deps)
+    element.scrollTo({ top: initialSnappedIndex * itemHeight })
+  }, [initialSnappedIndex, ...deps])
 
   useEffect(() => {
     const element = scrollRef.current

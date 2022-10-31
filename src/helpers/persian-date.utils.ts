@@ -47,7 +47,7 @@ export const getPersianMinutesRange = (
   const startMinute = isSamePersianHour(selectedDate, start)
     ? start.minute()
     : 0
-  const endMinute = isSamePersianHour(selectedDate, end) ? end.minute() : 60
+  const endMinute = isSamePersianHour(selectedDate, end) ? end.minute() + 1 : 60
 
   return R.range(startMinute, endMinute)
     .map((number: any) => String(number).padStart(2, '0'))
@@ -110,6 +110,6 @@ export const getPersianDaysOfMonthRange = (
     .slice(from, to)
     .map((day: any) => ({
       text: toLocale(day),
-      date: new PersianDate(start).add('days', day),
+      date: new PersianDate(selected).date(day),
     }))
 }

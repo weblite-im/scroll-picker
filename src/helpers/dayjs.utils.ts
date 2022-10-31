@@ -2,11 +2,15 @@ import dayjs from 'dayjs'
 import * as R from 'ramda'
 import { toLocale } from './fuctions/text'
 
+function dayDiff(end: dayjs.Dayjs, start: dayjs.Dayjs) {
+  return end.hour(0).diff(start.hour(0), 'days')
+}
+
 export const getDaysRange = (startDate: Date, endDate: Date) => {
   const start = dayjs(startDate)
   const end = dayjs(endDate)
 
-  return R.range(0, end.diff(start, 'day') + 1).map((day: any) => {
+  return R.range(0, dayDiff(end, start) + 1).map((day: any) => {
     const date = dayjs(start).add(day, 'day')
     return { text: toLocale(date.format('D MMMM')), date }
   })
@@ -48,8 +52,8 @@ export const getMinutesRange = (
   const start = dayjs(startDate)
   const end = dayjs(endDate)
 
-  const startMinute = isSameHour(start, selected) ? start.hour() : 0
-  const endMinute = isSameHour(end, selected) ? end.hour() : 60
+  const startMinute = isSameHour(start, selected) ? start.minute() : 0
+  const endMinute = isSameHour(end, selected) ? end.minute() + 1 : 60
 
   return R.range(startMinute, endMinute)
     .map((number: any) => String(number).padStart(2, '0'))
@@ -109,6 +113,6 @@ export const getDaysOfMonthRange = (
     .slice(from, to)
     .map((day: any) => ({
       text: toLocale(day),
-      date: dayjs(start).add(day, 'days'),
+      date: dayjs(selected).date(day),
     }))
 }
