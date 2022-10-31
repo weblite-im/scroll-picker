@@ -38,7 +38,7 @@ const PickerContainer = styled(Stack)(() => ({
 }))
 
 interface Value<T> {
-  selectedItem: T
+  selectedIndex: number
   items: T[]
   onUpdate: (snappedIndex: number) => unknown
 }
@@ -53,13 +53,13 @@ export function Picker<T>({ values }: Props<T>) {
       <StyledDivider absolute sx={{ bottom: ITEM_HEIGHT }} />
       <StyledDivider absolute sx={{ bottom: 2 * ITEM_HEIGHT }} />
 
-      {values.map(({ selectedItem, items, onUpdate }, index) => (
+      {values.map(({ selectedIndex, items, onUpdate }, index) => (
         <ScrollSnap
           /* NOTE: the order of the values would not change. */
           /* eslint-disable react/no-array-index-key */
           key={index}
           items={items}
-          selectedItem={selectedItem}
+          selectedIndex={selectedIndex}
           onUpdate={onUpdate}
         />
       ))}

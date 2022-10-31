@@ -10,33 +10,31 @@ export default {
   decorators: [boxDecorator()],
 } as ComponentMeta<TComponent>
 
-const Template: ComponentStory<TComponent> = (args) => (
-  <TimePicker {...args} />
-)
+const Template: ComponentStory<TComponent> = (args) => <TimePicker {...args} />
+
+const dates = {
+  start: new Date(Date.now() + 2 * 24 * 3600_000),
+  selected: new Date(Date.now() + 2 * 24 * 3600_000 + 1000),
+  end: new Date(Date.now() + 4 * 24 * 3600_000),
+}
 
 export const Persian = Template.bind({})
 Persian.args = {
   locale: 'fa',
-  onChange: console.log,
-  start: new Date(2022, 9, 1),
-  selected: new Date(),
-  end: new Date(2022, 11, 1)
+  onChange: () => {},
+  ...dates,
 }
 
 export const Arabic = Template.bind({})
 Arabic.args = {
-  locale: 'ar',
-  onChange: console.log,
-  start: new Date(2022, 9, 1),
-  selected: new Date(),
-  end: new Date(2022, 11, 1)
+  locale: 'ar-IQ',
+  onChange: () => {},
+  ...dates,
 }
 
 export const English = Template.bind({})
 English.args = {
   locale: 'en',
-  onChange: console.log,
-  start: new Date(2022, 9, 1),
-  selected: new Date(),
-  end: new Date(2022, 11, 1)
+  onChange: () => {},
+  ...dates,
 }

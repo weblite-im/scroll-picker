@@ -23,25 +23,25 @@ const Item = styled(Stack)({
 })
 
 interface Props<T> {
-  selectedItem: T
+  selectedIndex: number
   items: T[]
   onUpdate: (snappedIndex: number) => unknown
 }
 
-export function ScrollSnap<T>({ selectedItem, items, onUpdate }: Props<T>) {
+export function ScrollSnap<T>({ selectedIndex, items, onUpdate }: Props<T>) {
   const scrollRef = useRef<HTMLElement>()
 
   const snappedIndex = useScrollSnap(
     {
       scrollRef,
       itemHeight: ITEM_HEIGHT,
-      initialSnappedIndex: items.indexOf(selectedItem),
+      initialSnappedIndex: selectedIndex,
     },
     [items]
   )
 
   useEffect(() => {
-    onUpdate(snappedIndex)
+    if (snappedIndex !== selectedIndex) onUpdate(snappedIndex)
   }, [snappedIndex])
 
   return (
