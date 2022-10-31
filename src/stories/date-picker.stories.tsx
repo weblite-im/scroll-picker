@@ -12,29 +12,29 @@ export default {
 
 const Template: ComponentStory<TComponent> = (args) => <DatePicker {...args} />
 
+const dates = {
+  start: new Date(Date.now() + 2 * 24 * 3600_000),
+  selected: new Date(Date.now() + 2 * 24 * 3600_000 + 1000),
+  end: new Date(Date.now() + 48 * 24 * 3600_000),
+}
+
 export const Persian = Template.bind({})
 Persian.args = {
   locale: 'fa-IR',
   onChange: () => {},
-  start: new Date(2022, 9, 1),
-  selected: new Date(),
-  end: new Date(2022, 11, 17),
+  ...dates,
 }
 
 export const Arabic = Template.bind({})
 Arabic.args = {
   locale: 'ar-IQ',
   onChange: () => {},
-  start: new Date(2022, 9, 1),
-  selected: new Date(),
-  end: new Date(2022, 11,17 ),
+  ...dates,
 }
 
 export const English = Template.bind({})
 English.args = {
   locale: 'en',
   onChange: () => {},
-  start: new Date(2022, 9, 1),
-  selected: new Date(),
-  end: new Date(2022, 11, 17),
+  ...dates,
 }

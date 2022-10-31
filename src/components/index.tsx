@@ -19,7 +19,7 @@ interface Props {
 
 export function DatePicker({ theme, locale, ...props }: Props) {
   useEffect(() => {
-    i18next.changeLanguage(locale).then(console.log)
+    i18next.changeLanguage(locale)
   }, [locale])
   return (
     // @ts-ignore

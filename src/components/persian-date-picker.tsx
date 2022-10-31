@@ -1,63 +1,15 @@
-import * as R from 'ramda'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import PersianDate from 'persian-date'
 import { toEnglishNumber, toLocale } from '../helpers/fuctions/text'
 import { Picker } from './picker'
-
-const getYearsRange = (startDate: Date, endDate: Date) => {
-  const start = new PersianDate(startDate)
-  const end = new PersianDate(endDate)
-  return R.range(start.year(), end.year() + 1).map((number: any) =>
-    toLocale(number, false)
-  )
-}
-
-const getMonthsRange = (
-  startDate: Date,
-  endDate: Date,
-  selected: typeof PersianDate
-) => {
-  const start = new PersianDate(startDate)
-  const end = new PersianDate(endDate)
-  const { months } = new PersianDate().rangeName()
-
-  const startMonth = selected.year() === start.year() ? start.month() - 1 : 0
-  const endMonth = selected.year() === end.year() ? end.month() : undefined
-  return months.slice(startMonth, endMonth)
-}
-
-const getDaysRange = (
-  startDate: Date,
-  endDate: Date,
-  selected: typeof PersianDate
-) => {
-  const start = new PersianDate(startDate)
-  const end = new PersianDate(endDate)
-
-  const numberOfDaysInMonth = new PersianDate([
-    selected.year(),
-    selected.month(),
-  ]).daysInMonth()
-
-  const from =
-    selected.month() === start.month() && selected.year() === start.year()
-      ? start.date() - 1
-      : 0
-
-  const to =
-    selected.month() === end.month() && selected.year() === end.year()
-      ? end.date()
-      : numberOfDaysInMonth + 1
-
-  return R.range(1, numberOfDaysInMonth + 1)
-    .slice(from, to)
-    .map((day: any) => ({
-      text: toLocale(day),
-      date: new PersianDate(start).add('days', day),
-    }))
-}
+import {
+  clampPersianDate,
+  getPersianDaysOfMonthRange,
+  getPersianMonthsRange,
+  getPersianYearsRange,
+} from '../helpers/persian-date.utils'
 
 interface PersianBirthdatePickerProps {
   selected: Date
@@ -74,92 +26,84 @@ export function PersianDatePicker({
 }: PersianBirthdatePickerProps) {
   const [selectedDate, setSelectedDate] = useState(new PersianDate(selected))
   const [dayRange, setDayRange] = useState(
-    getDaysRange(start, end, selectedDate)
+    getPersianDaysOfMonthRange(start, end, selectedDate)
   )
 
   useEffect(() => {
     onChange(new Date(selectedDate.subtract('minutes', selectedDate.zone())))
-    setDayRange(getDaysRange(start, end, selectedDate))
+    setDayRange(getPersianDaysOfMonthRange(start, end, selectedDate))
   }, [selectedDate.toDate()])
 
   const onYearChange = (newIndex: number) => {
     if (newIndex === -1) return
-    const newValue = getYearsRange(start, end)[newIndex]
-    console.log(newValue)
+    const newValue = getPersianYearsRange(start, end)[newIndex]
     const newYear = Number(toEnglishNumber(newValue))
-    const daysInNewMonth = new PersianDate([
+    const newDate = new PersianDate([
       newYear,
       selectedDate.month(),
-    ]).daysInMonth()
-
-    const newDay =
-      daysInNewMonth < selectedDate.date()
-        ? daysInNewMonth
-        : selectedDate.date()
-
-    const newDate = new PersianDate([newYear, selectedDate.month(), newDay])
-    setSelectedDate(newDate)
+      selectedDate.date(),
+    ])
+    setSelectedDate(clampPersianDate(start, end, newDate))
   }
 
   const onMonthChange = (newIndex: number) => {
     if (newIndex === -1) return
-    const newValue = getMonthsRange(start, end, selectedDate)[newIndex]
+    const newValue = getPersianMonthsRange(start, end, selectedDate)[newIndex]
     const { months } = new PersianDate().rangeName()
     const newMonth = months.indexOf(newValue) + 1
-    const daysInNewMonth = new PersianDate([
+    const newDate = new PersianDate([
       selectedDate.year(),
       newMonth,
-    ]).daysInMonth()
+      selectedDate.date(),
+    ])
 
-    const newDay =
-      daysInNewMonth < selectedDate.date()
-        ? daysInNewMonth
-        : selectedDate.date()
-
-    const newDate = new PersianDate([selectedDate.year(), newMonth, newDay])
-    setSelectedDate(newDate)
+    setSelectedDate(clampPersianDate(start, end, newDate))
   }
 
   const onDayChange = (newIndex: number) => {
     if (newIndex === -1) return
-    const { date } = getDaysRange(start, end, selectedDate)[newIndex]
+    const { date } = getPersianDaysOfMonthRange(start, end, selectedDate)[
+      newIndex
+    ]
     const newDate = new PersianDate([
       selectedDate.year(),
       selectedDate.month(),
       date.date(),
     ])
-    setSelectedDate(newDate)
+    setSelectedDate(clampPersianDate(start, end, newDate))
   }
-  const parseSelected = () => {
+
+  const parseSelected = useMemo(() => {
     const yearValue = toLocale(selectedDate.year(), false)
-    const yearIndex = getYearsRange(start, end).indexOf(yearValue)
+    const yearIndex = getPersianYearsRange(start, end).indexOf(yearValue)
     const monthValue = selectedDate.format('MMMM')
-    const monthIndex = getMonthsRange(start, end, selectedDate).indexOf(
+    const monthIndex = getPersianMonthsRange(start, end, selectedDate).indexOf(
       monthValue
     )
     const dayValue = toLocale(selectedDate.date())
-    const dayIndex = getDaysRange(start, end, selectedDate)
+    const dayIndex = getPersianDaysOfMonthRange(start, end, selectedDate)
       .map(({ text }) => text)
       .indexOf(dayValue)
+
     return { yearIndex, monthIndex, dayIndex }
-  }
+  }, [start, end, selectedDate])
 
   return (
     <Picker
       values={[
         {
-          selectedIndex: parseSelected().dayIndex,
+          selectedIndex: parseSelected.dayIndex,
           items: dayRange.map(({ text }) => text),
           onUpdate: onDayChange,
         },
         {
-          selectedIndex: parseSelected().monthIndex,
-          items: getMonthsRange(start, end, selectedDate),
+          selectedIndex: parseSelected.monthIndex,
+          items: getPersianMonthsRange(start, end, selectedDate),
           onUpdate: onMonthChange,
         },
         {
-          selectedIndex: parseSelected().yearIndex,
-          items: getYearsRange(start, end),
+          selectedIndex: parseSelected.yearIndex,
+          items: getPersianYearsRange(start, end),
           onUpdate: onYearChange,
         },
       ]}

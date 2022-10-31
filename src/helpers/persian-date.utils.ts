@@ -63,3 +63,53 @@ export function clampPersianDate(
   if (new PersianDate(start).diff(newDate) > 0) return new PersianDate(start)
   return newDate
 }
+
+export const getPersianMonthsRange = (
+  startDate: Date,
+  endDate: Date,
+  selected: typeof PersianDate
+) => {
+  const start = new PersianDate(startDate)
+  const end = new PersianDate(endDate)
+  const { months } = new PersianDate().rangeName()
+
+  const startMonth = selected.year() === start.year() ? start.month() - 1 : 0
+  const endMonth = selected.year() === end.year() ? end.month() : undefined
+  return months.slice(startMonth, endMonth)
+}
+
+export const getPersianYearsRange = (startDate: Date, endDate: Date) => {
+  const start = new PersianDate(startDate)
+  const end = new PersianDate(endDate)
+  return R.range(start.year(), end.year() + 1).map((number: any) =>
+    toLocale(number, false)
+  )
+}
+
+function isSameMonth(selected: typeof PersianDate, start: typeof PersianDate) {
+  return selected.month() === start.month() && selected.year() === start.year()
+}
+
+export const getPersianDaysOfMonthRange = (
+  startDate: Date,
+  endDate: Date,
+  selected: typeof PersianDate
+) => {
+  const start = new PersianDate(startDate)
+  const end = new PersianDate(endDate)
+
+  const numberOfDaysInMonth = new PersianDate([
+    selected.year(),
+    selected.month(),
+  ]).daysInMonth()
+
+  const from = isSameMonth(selected, start) ? start.date() - 1 : 0
+  const to = isSameMonth(selected, end) ? end.date() : numberOfDaysInMonth + 1
+
+  return R.range(1, numberOfDaysInMonth + 1)
+    .slice(from, to)
+    .map((day: any) => ({
+      text: toLocale(day),
+      date: new PersianDate(start).add('days', day),
+    }))
+}

@@ -61,3 +61,54 @@ export function clampDate(start: Date, end: Date, newDate: dayjs.Dayjs) {
   if (dayjs(start).diff(newDate) > 0) return dayjs(start)
   return newDate
 }
+
+export const getMonthsRange = (
+  startDate: Date,
+  endDate: Date,
+  selected: dayjs.Dayjs
+) => {
+  const start = dayjs(startDate)
+  const end = dayjs(endDate)
+  const months = dayjs.months()
+
+  const startMonth = selected.year() === start.year() ? start.month() : 0
+  const endMonth = selected.year() === end.year() ? end.month() + 1 : undefined
+
+  return months.slice(startMonth, endMonth)
+}
+
+export const getYearsRange = (startDate: Date, endDate: Date) => {
+  const start = dayjs(startDate)
+  const end = dayjs(endDate)
+  return R.range(start.year(), end.year() + 1).map((number: any) =>
+    toLocale(number, false)
+  )
+}
+
+function isSameMonth(selected: dayjs.Dayjs, start: dayjs.Dayjs) {
+  return selected.month() === start.month() && selected.year() === start.year()
+}
+
+export const getDaysOfMonthRange = (
+  startDate: Date,
+  endDate: Date,
+  selected: dayjs.Dayjs
+) => {
+  const start = dayjs(startDate)
+  const end = dayjs(endDate)
+
+  const numberOfDaysInMonth = dayjs([
+    selected.year(),
+    selected.month(),
+  ]).daysInMonth()
+
+  const from = isSameMonth(selected, start) ? start.date() - 1 : 0
+  const to = isSameMonth(selected, end) ? end.date() : numberOfDaysInMonth + 1
+
+  return R.range(1, numberOfDaysInMonth + 1)
+    .slice(from, to)
+    .map((day: any) => ({
+      text: toLocale(day),
+      date: dayjs(start).add(day, 'days'),
+    }))
+}

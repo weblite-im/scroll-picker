@@ -41,7 +41,6 @@ export function ScrollSnap<T>({ selectedIndex, items, onUpdate }: Props<T>) {
   )
 
   useEffect(() => {
-    console.log(snappedIndex)
     onUpdate(snappedIndex)
   }, [snappedIndex])
 
