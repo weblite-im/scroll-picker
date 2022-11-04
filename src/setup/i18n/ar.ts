@@ -1,1 +1,5 @@
-export const ar = {}
+export const ar = {
+  translation: {
+    today: 'الیوم',
+  },
+}

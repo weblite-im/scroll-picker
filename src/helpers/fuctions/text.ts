@@ -1,4 +1,4 @@
-import i18next from 'i18next'
+import i18next from '../../setup/i18n'
 
 export const toLocale = (text: string | number, useGrouping = true) => {
   if (typeof text === 'number')

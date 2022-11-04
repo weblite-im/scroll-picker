@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import i18next from 'i18next'
+import i18next from '../setup/i18n'
 import { DatePicker as GlobalDatePicker } from './date-picker'
 import { ThemeProvider } from '@mui/material'
 import { PersianDatePicker } from './persian-date-picker'

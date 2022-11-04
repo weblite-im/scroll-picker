@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import localeData from 'dayjs/plugin/localeData'
 import arraySupport from 'dayjs/plugin/arraySupport'
 import 'dayjs/locale/ar'
-import i18next from 'i18next'
+import i18next from '../setup/i18n'
 import { toEnglishNumber, toLocale } from '../helpers/fuctions/text'
 import { Picker } from './picker'
 import {
