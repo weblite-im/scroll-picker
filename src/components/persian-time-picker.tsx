@@ -44,20 +44,16 @@ export function PersianTimePicker({
   const onHourChange = (newIndex: number) => {
     if (newIndex === -1) return
     const newValue = getPersianHoursRange(start, end, selectedDate)[newIndex]
-    const newHour = toEnglishNumber(
-      newValue.slice(newValue.indexOf('۰') === -1 ? 0 : newValue.indexOf('۰'))
-    )
-    const newDate = new PersianDate(selectedDate.hour(newHour))
+    const newHour = toEnglishNumber(newValue)
+    const newDate = new PersianDate(selectedDate.hour(+newHour))
     setSelectedDate(clampPersianDate(start, end, newDate))
   }
 
   const onMinuteChange = (newIndex: number) => {
     if (newIndex === -1) return
     const newValue = getPersianMinutesRange(start, end, selectedDate)[newIndex]
-    const newMinute = toEnglishNumber(
-      newValue.slice(newValue.indexOf('۰') === -1 ? 0 : newValue.indexOf('۰'))
-    )
-    const newDate = new PersianDate(selectedDate.minute(newMinute))
+    const newMinute = toEnglishNumber(newValue)
+    const newDate = new PersianDate(selectedDate.minute(+newMinute))
     setSelectedDate(clampPersianDate(start, end, newDate))
   }
 

@@ -46,11 +46,7 @@ export function TimePicker({
   const onHourChange = (newIndex: number) => {
     if (newIndex === -1) return
     const newValue = getHoursRange(start, end, selectedDate)[newIndex]
-    const newHour = toEnglishNumber(
-      newValue.slice(
-        newValue.indexOf(toLocale(0)) === -1 ? 0 : newValue.indexOf(toLocale(0))
-      )
-    )
+    const newHour = toEnglishNumber(newValue)
     const newDate = dayjs(selectedDate.hour(+newHour))
     setSelectedDate(clampDate(start, end, newDate))
   }
@@ -59,11 +55,7 @@ export function TimePicker({
     if (newIndex === -1) return
     const newValue = getMinutesRange(start, end, selectedDate)[newIndex]
     if (!newValue) return
-    const newMinute = toEnglishNumber(
-      newValue.slice(
-        newValue.indexOf(toLocale(0)) === -1 ? 0 : newValue.indexOf(toLocale(0))
-      )
-    )
+    const newMinute = toEnglishNumber(newValue)
     const newDate = dayjs(selectedDate.minute(+newMinute))
     setSelectedDate(clampDate(start, end, newDate))
   }
