@@ -36,7 +36,7 @@ export function PersianTimePicker({
     if (newIndex === -1) return
     const { date } = getPersianDaysRange(start, end)[newIndex]
     const newDate = new PersianDate(
-      selectedDate.date(date.date()).month(date.month())
+      selectedDate.date(date.date()).month(date.month()).year(date.year())
     )
     setSelectedDate(clampPersianDate(start, end, newDate))
   }

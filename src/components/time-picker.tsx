@@ -39,7 +39,7 @@ export function TimePicker({
   const onDayChange = (newIndex: number) => {
     if (newIndex === -1) return
     const { date } = getDaysRange(start, end)[newIndex]
-    const newDate = dayjs(selectedDate.date(date.date()).month(date.month()))
+    const newDate = dayjs(selectedDate.date(date.date()).month(date.month()).year(date.year()))
     setSelectedDate(clampDate(start, end, newDate))
   }
 
