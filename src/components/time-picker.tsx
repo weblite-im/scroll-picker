@@ -38,8 +38,14 @@ export function TimePicker({
 
   const onDayChange = (newIndex: number) => {
     if (newIndex === -1) return
-    const { date } = getDaysRange(start, end)[newIndex]
-    const newDate = dayjs(selectedDate.date(date.date()).month(date.month()).year(date.year()))
+    const dayRange = getDaysRange(start, end)
+    const index = dayRange
+      .map(({ text }) => text)
+      .indexOf(parseSelected.dayRange[newIndex])
+    const { date } = dayRange[index]
+    const newDate = dayjs(
+      selectedDate.date(date.date()).month(date.month()).year(date.year())
+    )
     setSelectedDate(clampDate(start, end, newDate))
   }
 
@@ -62,16 +68,30 @@ export function TimePicker({
 
   const parseSelected = useMemo(() => {
     const minuteValue = toLocale(String(selectedDate.minute()).padStart(2, '0'))
-    const minuteIndex = getMinutesRange(start, end, selectedDate).indexOf(
-      minuteValue
-    )
+    const minuteRange = getMinutesRange(start, end, selectedDate)
+    const minuteIndex = minuteRange.indexOf(minuteValue)
+
     const hourValue = toLocale(String(selectedDate.hour()).padStart(2, '0'))
-    const hourIndex = getHoursRange(start, end, selectedDate).indexOf(hourValue)
+    const hourRange = getHoursRange(start, end, selectedDate)
+    const hourIndex = hourRange.indexOf(hourValue)
+
     const dayValue = toLocale(selectedDate.format('D MMMM'))
-    const dayIndex = getDaysRange(start, end)
-      .map(({ text }) => text)
-      .indexOf(dayValue)
-    return { minuteIndex, hourIndex, dayIndex }
+    const tempDayRange = getDaysRange(start, end).map(({ text }) => text)
+    const tempDayIndex = tempDayRange.indexOf(dayValue)
+    const dayRange = tempDayRange.slice(
+      Math.max(0, tempDayIndex - 15),
+      tempDayIndex + 15
+    )
+    const dayIndex = dayRange.indexOf(dayValue)
+
+    return {
+      minuteIndex,
+      hourIndex,
+      dayIndex,
+      minuteRange,
+      hourRange,
+      dayRange,
+    }
   }, [start, end, selectedDate])
 
   return (
@@ -79,17 +99,17 @@ export function TimePicker({
       values={[
         {
           selectedIndex: parseSelected.minuteIndex,
-          items: getMinutesRange(start, end, selectedDate),
+          items: parseSelected.minuteRange,
           onUpdate: onMinuteChange,
         },
         {
           selectedIndex: parseSelected.hourIndex,
-          items: getHoursRange(start, end, selectedDate),
+          items: parseSelected.hourRange,
           onUpdate: onHourChange,
         },
         {
           selectedIndex: parseSelected.dayIndex,
-          items: getDaysRange(start, end).map(({ text }) => text),
+          items: parseSelected.dayRange,
           onUpdate: onDayChange,
         },
       ]}
