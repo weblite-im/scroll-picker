@@ -1,4 +1,4 @@
-import { Divider, Stack, styled } from '@mui/material'
+import { Box, Divider, Stack, styled } from '@mui/material'
 import { ScrollSnap } from './scroll-snap'
 
 const ITEM_HEIGHT = 48
@@ -10,7 +10,25 @@ const StyledDivider = styled(Divider)(({ theme }) => ({
   borderWidth: '1px',
 }))
 
-const PickerContainer = styled(Stack)(() => ({
+const HeaderContainer = styled(Box)({
+  width: '100%',
+  height: '30px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  overflow: 'hidden',
+})
+
+const StyledItem = styled(Box)({
+  display: 'flex',
+  justifyContent: 'center',
+  alignContent: 'center',
+  maxWidth: '100px',
+  width: '100px',
+  color: 'rgb(40, 40, 40)',
+})
+
+const PickerContainer = styled(Stack)(({ theme }) => ({
   width: '100%',
   height: CONTAINER_HEIGHT,
 
@@ -22,8 +40,9 @@ const PickerContainer = styled(Stack)(() => ({
   justifyContent: 'center',
 
   overflow: 'hidden',
-
   position: 'relative',
+  // @ts-ignore
+  borderTop: `1px solid ${theme.palette.semiLightGray}`,
 
   // TODO: Below styles prevents scrolling
   // '&:before': {
@@ -45,24 +64,39 @@ interface Value<T> {
 
 interface Props<T> {
   values: Value<T>[]
+  items?: string[]
 }
 
-export function Picker<T>({ values }: Props<T>) {
+export function Picker<T>({ values, items }: Props<T>) {
   return (
-    <PickerContainer>
-      <StyledDivider absolute sx={{ bottom: ITEM_HEIGHT }} />
-      <StyledDivider absolute sx={{ bottom: 2 * ITEM_HEIGHT }} />
+    <>
+      {items && (
+        <>
+          <HeaderContainer>
+            {items.map((item, index) => {
+              return <StyledItem key={index}>{item}</StyledItem>
+            })}
+          </HeaderContainer>
 
-      {values.map(({ selectedIndex, items, onUpdate }, index) => (
-        <ScrollSnap
-          /* NOTE: the order of the values would not change. */
-          /* eslint-disable react/no-array-index-key */
-          key={index}
-          items={items}
-          selectedIndex={selectedIndex}
-          onUpdate={onUpdate}
-        />
-      ))}
-    </PickerContainer>
+          <StyledDivider />
+        </>
+      )}
+
+      <PickerContainer>
+        <StyledDivider absolute sx={{ bottom: ITEM_HEIGHT }} />
+        <StyledDivider absolute sx={{ bottom: 2 * ITEM_HEIGHT }} />
+
+        {values.map(({ selectedIndex, items, onUpdate }, index) => (
+          <ScrollSnap
+            /* NOTE: the order of the values would not change. */
+            /* eslint-disable react/no-array-index-key */
+            key={index}
+            items={items}
+            selectedIndex={selectedIndex}
+            onUpdate={onUpdate}
+          />
+        ))}
+      </PickerContainer>
+    </>
   )
 }

@@ -90,6 +90,7 @@ export function PersianDatePicker({
 
   return (
     <Picker
+      items={['روز', 'ماه', 'سال']}
       values={[
         {
           selectedIndex: parseSelected.dayIndex,
