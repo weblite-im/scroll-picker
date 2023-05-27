@@ -13,9 +13,9 @@ export default {
 const Template: ComponentStory<TComponent> = (args) => <TimePicker {...args} />
 
 const dates = {
-  start: new Date(Date.now() + 2 * 24 * 3600_000),
+  start: new Date(Date.now() - 90 * 24 * 3600_000),
   selected: new Date(Date.now() + 2 * 24 * 3600_000 + 1000),
-  end: new Date(Date.now() + 4 * 24 * 3600_000),
+  end: new Date(Date.now() + 90 * 24 * 3600_000),
 }
 
 export const Persian = Template.bind({})

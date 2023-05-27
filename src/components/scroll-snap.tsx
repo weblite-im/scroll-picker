@@ -20,6 +20,9 @@ const Item = styled(Stack)({
   alignItems: 'center',
   justifyContent: 'center',
   height: `${ITEM_HEIGHT}px`,
+  fontWeight: '500',
+  fontSize: '14px',
+  lineHeight: '24px',
 })
 
 interface Props<T> {
@@ -46,26 +49,25 @@ export function ScrollSnap<T>({ selectedIndex, items, onUpdate }: Props<T>) {
 
   return (
     <ScrollSnapContainer ref={scrollRef}>
-      <Item color={snappedIndex === -1 ? 'black' : 'lightGray'} />
+      <Item color={snappedIndex === -1 ? '#282828' : 'lightGray'} />
 
       {items.map((text, index) => (
         <Item
-          color={snappedIndex === index ? 'black' : 'lightGray'}
+          color={snappedIndex === index ? '#282828' : 'lightGray'}
           key={String(text)}
-          onClick={() =>
-            // @ts-ignore
-            // TODO: Use something except ?. to fix ts error
+          onClick={() => {
+            if (!scrollRef.current) return
             scrollRef.current.scrollTo({
               top: index * ITEM_HEIGHT,
               behavior: 'smooth',
             })
-          }
+          }}
         >
           {text as string}
         </Item>
       ))}
 
-      <Item color={snappedIndex === -1 ? 'black' : 'lightGray'} />
+      <Item color={snappedIndex === -1 ? '#282828' : 'lightGray'} />
     </ScrollSnapContainer>
   )
 }

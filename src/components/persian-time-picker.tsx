@@ -34,9 +34,13 @@ export function PersianTimePicker({
 
   const onDayChange = (newIndex: number) => {
     if (newIndex === -1) return
-    const { date } = getPersianDaysRange(start, end)[newIndex]
+    const dayRange = getPersianDaysRange(start, end)
+    const index = dayRange
+      .map(({ text }) => text)
+      .indexOf(parseSelected.dayRange[newIndex])
+    const { date } = dayRange[index]
     const newDate = new PersianDate(
-      selectedDate.date(date.date()).month(date.month())
+      selectedDate.date(date.date()).month(date.month()).year(date.year())
     )
     setSelectedDate(clampPersianDate(start, end, newDate))
   }
@@ -59,21 +63,30 @@ export function PersianTimePicker({
 
   const parseSelected = useMemo(() => {
     const minuteValue = toLocale(String(selectedDate.minute()).padStart(2, '0'))
-    const minuteIndex = getPersianMinutesRange(
-      start,
-      end,
-      selectedDate
-    ).indexOf(minuteValue)
+    const minuteRange = getPersianMinutesRange(start, end, selectedDate)
+    const minuteIndex = minuteRange.indexOf(minuteValue)
+
     const hourValue = toLocale(String(selectedDate.hour()).padStart(2, '0'))
-    const hourIndex = getPersianHoursRange(start, end, selectedDate).indexOf(
-      hourValue
-    )
+    const hourRange = getPersianHoursRange(start, end, selectedDate)
+    const hourIndex = hourRange.indexOf(hourValue)
 
     const dayValue = selectedDate.format('D MMMM')
-    const dayIndex = getPersianDaysRange(start, end)
-      .map(({ text }) => text)
-      .indexOf(dayValue)
-    return { minuteIndex, hourIndex, dayIndex }
+    const tempDayRange = getPersianDaysRange(start, end).map(({ text }) => text)
+    const tempDayIndex = tempDayRange.indexOf(dayValue)
+    const dayRange = tempDayRange.slice(
+      Math.max(0, tempDayIndex - 15),
+      tempDayIndex + 15
+    )
+    const dayIndex = dayRange.indexOf(dayValue)
+
+    return {
+      minuteIndex,
+      hourIndex,
+      dayIndex,
+      minuteRange,
+      hourRange,
+      dayRange,
+    }
   }, [selectedDate, end, start])
 
   return (
@@ -81,17 +94,17 @@ export function PersianTimePicker({
       values={[
         {
           selectedIndex: parseSelected.minuteIndex,
-          items: getPersianMinutesRange(start, end, selectedDate),
+          items: parseSelected.minuteRange,
           onUpdate: onMinuteChange,
         },
         {
           selectedIndex: parseSelected.hourIndex,
-          items: getPersianHoursRange(start, end, selectedDate),
+          items: parseSelected.hourRange,
           onUpdate: onHourChange,
         },
         {
           selectedIndex: parseSelected.dayIndex,
-          items: getPersianDaysRange(start, end).map(({ text }) => text),
+          items: parseSelected.dayRange,
           onUpdate: onDayChange,
         },
       ]}
